@@ -23,7 +23,7 @@
         </td>
       <% else %>
         <td>
-          <%= link_to book_favorite_path(book), method: :post, style: "color: blue;" do %>
+          <%= link_to book_favorites_path(book), method: :post, style: "color: blue;" do %>
           ♥<%= book.favorites.count %>
           <% end %>
         </td>

@@ -12,7 +12,9 @@ class User < ApplicationRecord
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: {maximum: 50}
 
-
+  def favorited_by?(user)
+    favorites.exists?(user_id: user.id)
+  end
 
 
   def get_profile_image(width,height)
