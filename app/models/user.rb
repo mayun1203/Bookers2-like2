@@ -21,10 +21,6 @@ class User < ApplicationRecord
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: {maximum: 50}
 
-  #def favorited_by?(user)
-    #favorites.exists?(user_id: user.id)
-  #end
-
   def get_profile_image(width,height)
     unless profile_image.attached?
       file_path = Rails.root.join('app/assets/images/no-image-icon.jpg')
@@ -33,18 +29,33 @@ class User < ApplicationRecord
     profile_image.variant(resize_to_limit: [width,height]).processed
   end
 
-  # 指定したユーザーをフォローする
+# 指定したユーザーをフォローする
   def follow(user)
     active_relationships.create(followed_id: user.id)
   end
 
-  # 指定したユーザーのフォローを解除する
+# 指定したユーザーのフォローを解除する
   def unfollow(user)
     active_relationships.find_by(followed_id: user.id).destroy
   end
 
-  # 指定したユーザーをフォローしているかどうかを判定
+# 指定したユーザーをフォローしているかどうかを判定
   def following?(user)
     followings.include?(user)
+  end
+
+#検索方法分岐
+  def self.looks(search, word)
+    if search == "perfect_match"
+      @user = User.where("name LIKE?", "#{word}")
+    elsif search == "forward_match"
+      @user =User.where("name LIKE?", "#{word}%")
+    elsif search == "backward_match"
+      @user =User.where("name LIKE?", "%#{word}")
+    elsif search == "partial_match"
+      @user =User.where("name LIKE?", "%#{word}%")
+    else
+      @user = User.all
+    end
   end
 end
